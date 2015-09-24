@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<!-- Copyright (c) 2015, Spencer Lank. All rights reserved. -->
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Audes</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<style>
+body{
+margin:0px;/*remove space between view port and first child elements*/
+padding:0px;
+font-family:arial;
+font-size:0px;/*remove space between inline elements*/
+}
+table{
+position:relative;
+border-collapse:collapse;
+}
+table.me{
+width:100%;
+}
+table.ta{
+width:100%;
+}
+table.sus{
+position:absolute;
+}
+tr{
+}
+td{
+padding:0px 4px;
+border:1px solid white;
+height:19px;
+font-size:medium;
+white-space:pre;
+background:aliceblue;
+}
+td.ce{
+min-width:15px;
+min-height:15px;
+}
+td.se{
+outline:1px solid black;
+}
+td.ta{
+padding:0px;
+background:white;
+}
+td.neRo{
+text-align:center;
+cursor:pointer;
+}
+td.neCo{
+cursor:pointer;
+}
+td.ceBu{
+background:#FFF0FF;
+}
+input.ce{
+margin:0px;padding:0px;
+border:0px;
+outline:0px;
+font-family:arial;
+font-size:medium;
+background:aliceblue;
+resize:none;
+}
+input.ce::-ms-clear{/*Hide the Clear Button (X button) in IE*/
+display:none;
+}
+div.bu{
+display:inline-block;
+min-width:10px;
+padding:0px 2px;
+margin-left:0px;
+outline:1px solid black;
+text-align:center;
+font-weight:normal;
+background:#FFF0FF;/*cornsilk;*/
+cursor:pointer;
+}
+div.buPrd{
+display:inline-block;
+min-width:10px;
+padding:0px 2px;
+margin-left:0px;
+outline:1px solid black;
+text-align:center;
+font-weight:normal;
+background:#7fffd4;
+cursor:pointer;
+}
+.b{
+font-weight:bold;
+}
+.taNa{
+font-weight:bold;
+}
+</style>
+<script>
+
+function main() {
+// Database
+
+// Objects
+var Bridge = {
+	length: 32,
+	width: 64,
+	height: 16,
+	x: undefined,
+	y: undefined,
+	z: undefined,
+};
+
+var Engine = {
+	length: 128,
+	width: 64,
+	height: 64,
+	x: undefined,
+	y: undefined,
+	z: undefined,
+};
+
+var Renderer = {
+	zoom: 1,
+	xOrigin: 100,
+	yOrigin: 100,
+};
+
+// Specifications
+var Spec = {
+	Bridge_X: function () {
+
+	}
+};
+
+// Operators
+function solver (rLeftExpression, rOperator, rRightExpression) {
+
+	var leftExpression = parseInt(rLeftExpression);
+	var operator = rOperator;
+	var rightExpression = parseInt(rRightExpression);
+
+	console.log('leftExpression: ' + leftExpression + '; operator: ' + operator + '; rightExpression: ' + rightExpression);
+
+	switch (operator) {
+		// Multiply
+		case '*':
+			return leftExpression * rightExpression;
+		break;
+		// Divide
+		case '/':
+			return leftExpression / rightExpression;
+		break;
+		// Add
+		case '+':
+			return leftExpression + rightExpression;
+		break;
+		// Subtract
+		case '-':
+			return leftExpression - rightExpression;
+		break;
+		// Is equal
+		case '==':
+			return leftExpression == rightExpression;
+		break;
+		// Is greater
+		case '>':
+			return leftExpression > rightExpression;
+		break;
+		// Is less
+		case '<':
+			return leftExpression < rightExpression;
+		break;
+		// Is greater or equal (can possibily eliminate this to possibly increase performance)
+		case '>=':
+			return leftExpression >= rightExpression;
+		break;
+		// Is less or equal (can possibily eliminate this to possibly increase performance)
+		case '<=':
+			return leftExpression <= rightExpression;
+		break;
+	}
+}
+
+function resolve(rExpression) {
+
+	var expression = rExpression;
+
+	// Parse Expression
+	var expressionArr = [];
+	var expressionLen = expression.length;
+	var number = '';
+	var isNumber = false;
+
+	for (var i = 0; i < expressionLen; i++) {
+		
+		var character = expression[i];
+		console.log('character: ' + character);
+
+		switch (character) {
+			case '*':
+				if (isNumber == true) { resetNum() }
+				expressionArr.push('*');
+			break;
+			case '/':
+				if (isNumber == true) { resetNum() }
+				expressionArr.push('/');
+			break;
+			case '+':
+				if (isNumber == true) { resetNum() }
+				expressionArr.push('+');
+			break;
+			case '-':
+				if (isNumber == true) { resetNum() }
+				expressionArr.push('-');
+			break;
+			case '>':
+				if (isNumber == true) { resetNum() }
+				// Could eliminate check for = to improve perfomance but then can't use >= in expressions
+				expression[i+1] == '=' ? expressionArr.push('>=') : expressionArr.push('>')
+			break;
+			case '<':
+				if (isNumber == true) { resetNum() }
+				// Could eliminate check for = to improve perfomance but then can't use <= in expressions
+				expression[i+1] == '=' ? expressionArr.push('<=') : expressionArr.push('<')
+			break;
+			default:
+				number += character;
+				console.log('number: ' + number);
+				isNumber = true;
+		}
+	}
+
+	if (isNumber == true) { resetNum() } 
+
+	function resetNum()	{
+		expressionArr.push(number);
+		number = '';
+		isNumber = false;
+	}
+
+	console.log('expressionArr: ' + expressionArr);
+
+	// Evaluate Expression
+	var endOfExpression = expressionArr.length - 2;
+	var result;
+
+	for (var i = 0; i < endOfExpression; i += 2) {
+		var leftNum = expressionArr[0];
+		var operator = expressionArr[1];
+		var rightNum = expressionArr[2];
+		result = solver(leftNum, operator, rightNum);
+		console.log('result: ' + result);
+		expressionArr.shift();expressionArr.shift();
+		expressionArr[0] = result;
+		console.log('expressionArr: ' + expressionArr);
+	}
+
+	return result;
+}
+
+console.log("resolve('10*2/5+3-7'):" + resolve('10*2/5+3-7'));
+console.log("resolve('16+2+2'):" + resolve('16+2+2'));
+console.log("solver(8,'*',4):" + solver(8,'*',4));
+console.log("solver(8,'/',4):" + solver(8,'/',4));
+console.log("solver(8,'+',4):" + solver(8,'+',4));
+console.log("solver(8,'-',4):" + solver(8,'-',4));
+console.log("solver(1,'==',1):" + solver(1,'==',1));
+console.log("solver(1,'==',2):" + solver(1,'==',2));
+console.log("solver(2,'>',1):" + solver(2,'>',1));
+console.log("solver(1,'>',1):" + solver(1,'>',1));
+console.log("solver(1,'<',2):" + solver(1,'<',2));
+console.log("solver(1,'<',1):" + solver(1,'<',1));
+console.log("solver(2,'>=',1):" + solver(2,'>=',1));
+console.log("solver(1,'>=',1):" + solver(1,'>=',1));
+console.log("solver(0,'>=',1):" + solver(0,'>=',1));
+console.log("solver(1,'<=',2):" + solver(1,'<=',2));
+console.log("solver(1,'<=',1):" + solver(1,'<=',1));
+console.log("solver(1,'<=',0):" + solver(1,'<=',0));
+
+} // End Main()
+
+
+
+</script> 
+</head>
+<body onload='main()'>
+</body>
+
+</html>

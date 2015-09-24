@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!-- Copyright (c) 2015, Spencer Lank. All rights reserved. -->
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Switch Vs If</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<style>
+body{
+margin:0px;/*remove space between view port and first child elements*/
+padding:0px;
+font-family:arial;
+font-size:0px;/*remove space between inline elements*/
+}
+table{
+position:relative;
+border-collapse:collapse;
+}
+table.me{
+width:100%;
+}
+table.ta{
+width:100%;
+}
+table.sus{
+position:absolute;
+}
+tr{
+}
+td{
+padding:0px 4px;
+border:1px solid white;
+height:19px;
+font-size:medium;
+white-space:pre;
+background:aliceblue;
+}
+td.ce{
+min-width:15px;
+min-height:15px;
+}
+td.se{
+outline:1px solid black;
+}
+td.ta{
+padding:0px;
+background:white;
+}
+td.neRo{
+text-align:center;
+cursor:pointer;
+}
+td.neCo{
+cursor:pointer;
+}
+td.ceBu{
+background:#FFF0FF;
+}
+input.ce{
+margin:0px;padding:0px;
+border:0px;
+outline:0px;
+font-family:arial;
+font-size:medium;
+background:aliceblue;
+resize:none;
+}
+input.ce::-ms-clear{/*Hide the Clear Button (X button) in IE*/
+display:none;
+}
+div.bu{
+display:inline-block;
+min-width:10px;
+padding:0px 2px;
+margin-left:0px;
+outline:1px solid black;
+text-align:center;
+font-weight:normal;
+background:#FFF0FF;/*cornsilk;*/
+cursor:pointer;
+}
+div.buPrd{
+display:inline-block;
+min-width:10px;
+padding:0px 2px;
+margin-left:0px;
+outline:1px solid black;
+text-align:center;
+font-weight:normal;
+background:#7fffd4;
+cursor:pointer;
+}
+.b{
+font-weight:bold;
+}
+.taNa{
+font-weight:bold;
+}
+</style>
+<script>
+
+function main() {
+
+var chars = '*/+-><';
+var charsLen = chars.length;
+var string = '';
+for (var i = 0; i < 100000; i++) {
+	string += chars[Math.round(Math.random() * (charsLen - 1))];
+}
+
+function switchTest(rString) {
+	stringLen = rString.length;
+	var character;
+	for (var i = 0; i < stringLen; i++) {
+		character = rString[i];
+		switch (character) {
+			case '*':
+			break;
+			case '/':
+			break;
+			case '+':
+			break;
+			case '-':
+			break;
+			case '>':
+			break;
+			case '<':
+			break;
+		}
+	}
+}
+
+function orTest(rString) {
+	stringLen = rString.length;
+	var character;
+	for (var i = 0; i < stringLen; i++) {
+		character = rString[i];
+		if (character == ('*' || '/' || '+' || '-' || '<' || '>')) {}
+	}
+}
+
+function indexOfTest(rString) {
+	stringLen = rString.length;
+	var character;
+	for (var i = 0; i < stringLen; i++) {
+		chars.indexOf(character);
+	}
+}
+
+for (var i = 0; i < 10; i++) {
+	var now = performance.now();
+	switchTest(string);
+	console.log('switchTest: ' + (performance.now() - now));
+	now = performance.now();
+	orTest(string);
+	console.log('orTest: ' + (performance.now() - now));
+}
+
+} // End Main()
+
+
+
+</script> 
+</head>
+<body onload='main()'>
+</body>
+
+</html>
